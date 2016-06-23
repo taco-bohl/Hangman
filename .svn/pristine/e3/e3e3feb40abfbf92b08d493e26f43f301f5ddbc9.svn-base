@@ -1,0 +1,385 @@
+/*
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Hangman;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+
+/**
+ *
+ * @author (Your Name Here)
+ */
+public class Hangman extends javax.swing.JFrame {
+
+    private String secretWord;
+    private String letter;
+
+    private String[] cBoxValues = {"Easy", "Medium", "Hard", "Random"};
+    private String guess;
+    private ArrayList guessArrayList;
+    private String print;
+    private boolean correct;
+
+    private Figure poorGuy;
+
+    private int numberCorrect;
+    private int numberOfWrongGuesses;
+    private boolean isGameOver;
+
+    /**
+     * Creates new form Hangman
+     */
+    public Hangman() {
+        poorGuy = new Figure();
+        initComponents();
+        guessButton.setEnabled(false);
+        giveUpButton.setEnabled(false);
+
+    }
+
+    public void newGameCustom() {
+        numberCorrect = 0;
+        numberOfWrongGuesses = 0;
+        guessArrayList = new ArrayList();
+        guessButton.setEnabled(true);
+        String customWord = JOptionPane.showInputDialog(null, "Please enter a word: ");
+        secretWord = customWord;
+        for (int i = 0; i < secretWord.length(); i++) {
+            jLabel1.setText(this.printWordStart());
+        }
+    }
+
+    public void newGame() {
+
+        numberCorrect = 0;
+        numberOfWrongGuesses = 0;
+
+        guessArrayList = new ArrayList();
+
+        guessButton.setEnabled(true);
+        giveUpButton.setEnabled(true);
+        if (jComboBox1.getSelectedIndex() == 0) {
+            secretWord = WordList.getSecretWordEasy();
+        } else if (jComboBox1.getSelectedIndex() == 1) {
+            secretWord = WordList.getSecretWordMedium();
+        } else if (jComboBox1.getSelectedIndex() == 2) {
+            secretWord = WordList.getSecretWordHard();
+        } else {
+            secretWord = WordList.getSecretWordRandom();
+        }
+
+        for (int i = 0; i < secretWord.length(); i++) {
+            jLabel1.setText(this.printWordStart());
+        }
+        jLabel2.setText(printLettersUsed());
+        poorGuy.timesDrawn(numberOfWrongGuesses);
+        repaint();
+    }
+
+    public void takeTurn() {
+
+        guess = enterGuessTextField.getText();
+        if (guessArrayList.contains(guess)) {
+            JOptionPane.showMessageDialog(null, "You already entered " + guess + " !");
+        } else {
+            guessArrayList.add(guess);
+            for (int i = 0; i < secretWord.length(); i++) {
+                if (guess.charAt(0) == secretWord.charAt(i)) {
+                    correct = true;
+                    break;
+
+                } else {
+                    correct = false;
+
+                }
+
+            }
+            if (correct) {
+                numberCorrect++;
+                jLabel1.setText(printWordCorrect());
+                jLabel2.setText(printLettersUsed());
+                this.isGameOver();
+            } else {
+                numberOfWrongGuesses++;
+                poorGuy.timesDrawn(numberOfWrongGuesses);
+                repaint();
+                jLabel2.setText(printLettersUsed());
+                this.isGameOver();
+            }
+        }
+
+    }
+
+    public String printWordCorrect() {
+
+        char[] charArray = letter.toCharArray();
+
+        for (int i = 0; i < secretWord.length(); i++) {
+            if (guess.charAt(0) == secretWord.charAt(i)) {
+                charArray[i] = guess.charAt(0);
+            }
+
+        }
+        letter = String.valueOf(charArray);
+
+        return letter;
+
+    }
+
+    public String printLettersUsed() {
+
+        print = (String.valueOf(guessArrayList)).replace("[", "").replace("]", "");
+        return print;
+    }
+
+    public String printWordStart() {
+
+        letter = "";
+        for (int i = 0; i < secretWord.length(); i++) {
+
+            letter += "?";
+
+        }
+        return letter;
+    }
+
+    public boolean isGameOver() {
+        if (numberOfWrongGuesses >= 6) {
+            isGameOver = true;
+            JOptionPane.showMessageDialog(null, "You lose! The word was: " + secretWord);
+            guessButton.setEnabled(false);
+            giveUpButton.setEnabled(false);
+        } else if (letter.contains(secretWord)) {
+            isGameOver = true;
+            JOptionPane.showMessageDialog(null, "You win!");
+            guessButton.setEnabled(false);
+        } else {
+            isGameOver = false;
+        }
+        return isGameOver;
+    }
+
+    public void paint(Graphics g) {
+        super.paint(g);
+        g.setColor(Color.BLACK);
+        g.fillRect(35, 300, 450, 40);
+        g.fillRect(60, 75, 20, 225);
+        g.fillRect(60, 75, 225, 20);
+        g.fillRect(185, 75, 5, 75);
+
+        poorGuy.drawPart(g);
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        secretWordLabel = new javax.swing.JLabel();
+        lettersUsedLabel = new javax.swing.JLabel();
+        enterGuessLabel = new javax.swing.JLabel();
+        guessButton = new javax.swing.JButton();
+        newWordButton = new javax.swing.JButton();
+        customWordButton = new javax.swing.JButton();
+        giveUpButton = new javax.swing.JButton();
+        enterGuessTextField = new javax.swing.JTextField();
+        jComboBox1 = new javax.swing.JComboBox(cBoxValues);
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        secretWordLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        secretWordLabel.setText("Secret Word:");
+
+        lettersUsedLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lettersUsedLabel.setText("Letters Used:");
+
+        enterGuessLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        enterGuessLabel.setText("Enter Guess:");
+
+        guessButton.setText("Guess");
+        guessButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                guessButtonActionPerformed(evt);
+            }
+        });
+
+        newWordButton.setText("New Word");
+        newWordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newWordButtonActionPerformed(evt);
+            }
+        });
+
+        customWordButton.setText("Custom Word");
+        customWordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customWordButtonActionPerformed(evt);
+            }
+        });
+
+        giveUpButton.setText("Give Up");
+        giveUpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                giveUpButtonActionPerformed(evt);
+            }
+        });
+
+        enterGuessTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enterGuessTextFieldActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(guessButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(enterGuessLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(enterGuessTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(newWordButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(78, 78, 78)
+                        .addComponent(customWordButton)
+                        .addGap(71, 71, 71)
+                        .addComponent(giveUpButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(secretWordLabel)
+                            .addComponent(lettersUsedLabel))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(337, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(secretWordLabel)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lettersUsedLabel)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(enterGuessLabel)
+                    .addComponent(enterGuessTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(guessButton)
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newWordButton)
+                    .addComponent(customWordButton)
+                    .addComponent(giveUpButton))
+                .addGap(18, 18, 18)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void newWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newWordButtonActionPerformed
+        // TODO add your handling code here:
+
+        this.newGame();
+
+
+    }//GEN-LAST:event_newWordButtonActionPerformed
+
+    private void guessButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guessButtonActionPerformed
+        // TODO add your handling code here:
+
+        this.takeTurn();
+    }//GEN-LAST:event_guessButtonActionPerformed
+
+    private void customWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customWordButtonActionPerformed
+        // TODO add your handling code here:
+        this.newGameCustom();
+    }//GEN-LAST:event_customWordButtonActionPerformed
+
+    private void enterGuessTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enterGuessTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_enterGuessTextFieldActionPerformed
+
+    private void giveUpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_giveUpButtonActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, "You lose! The secret word was: " + secretWord);
+            guessButton.setEnabled(false);
+            giveUpButton.setEnabled(false);
+    }//GEN-LAST:event_giveUpButtonActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Hangman.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Hangman.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Hangman.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Hangman.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Hangman().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton customWordButton;
+    private javax.swing.JLabel enterGuessLabel;
+    private javax.swing.JTextField enterGuessTextField;
+    private javax.swing.JButton giveUpButton;
+    private javax.swing.JButton guessButton;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel lettersUsedLabel;
+    private javax.swing.JButton newWordButton;
+    private javax.swing.JLabel secretWordLabel;
+    // End of variables declaration//GEN-END:variables
+}
